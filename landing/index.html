@@ -18,6 +18,7 @@
 </head>
 <body>
 <div class="bg-wash" aria-hidden="true"></div>
+<div class="bg-page" aria-hidden="true"></div>
 
 <!-- ══════════════ HEADER ══════════════ -->
 <header class="site-head" id="top">
@@ -44,6 +45,7 @@
 <main>
 <!-- ══════════════ HERO ══════════════ -->
 <section class="hero">
+  <div class="path-deco" aria-hidden="true"><span class="path-arrow">➶</span><em>curiouser and curiouser</em></div>
   <div class="hero-copy">
     <div class="eyebrow"><span class="dot pulse"></span> Genesis · 888 живых животных · Solana</div>
     <h1 class="h-display">Один токен.<br>Один живой кролик.<br><span class="accent">Камера — 24/7.</span></h1>
@@ -57,7 +59,7 @@
     <div class="price-card">
       <div class="pc-row">
         <div>
-          <div class="pc-label">Стоимость кролика (Genesis)</div>
+          <div class="pc-label">Стоимость кролика · <b class="pc-wave">волна 1</b></div>
           <div class="pc-price">500&nbsp;<span class="pc-cur">USD</span></div>
         </div>
         <div class="pc-eq">=</div>
@@ -67,19 +69,31 @@
           <div class="pc-note" id="priceNote">считаем от $500 ÷ текущий курс</div>
         </div>
       </div>
+      <div class="quote" id="quote">
+        <div class="q-main">
+          <div class="pc-label">Курс зафиксирован · <b id="qLeft">—</b></div>
+          <div class="q-sol"><span id="qSol">—</span><span class="pc-cur">SOL</span></div>
+        </div>
+        <div class="q-side">
+          <div class="bar q-bar"><i id="qBar"></i></div>
+          <button class="q-refresh" id="qRefresh" type="button">↻ пересчитать</button>
+        </div>
+      </div>
       <div class="pc-meta">
         <span>⏳ <b id="countdown">—</b> до открытия минта</span>
         <span>🎟 вайтлист: <b id="wlCount">1 412</b> адресов</span>
-        <span>🏠 слотов: <b>888</b> = столько вольеров реально построено</span>
+        <span>🏠 <b>888</b> животных = <b>888</b> вольеров · один токен — одно животное</span>
       </div>
       <div class="pc-actions">
         <button class="btn btn-primary" id="mintBtn">Забронировать за <span id="mintBtnSol">—</span> SOL</button>
         <a class="btn btn-line" href="#care">Что входит в 500&nbsp;$</a>
       </div>
       <p class="fineprint">
-        Токен — право требования на опеку и участие, а не «собственность на животное».
-        Цена в SOL фиксируется в момент подписания транзакции. Платёж и минт доступны после
-        публикации смарт-контракта (см. «Статус»).
+        RCN — <b>внутриигровой предмет</b> права заботы, а не долговое требование и не «собственность на животное».
+        В 500 $ входит только животное и его карточка; содержание — отдельный инвойс 30–60&nbsp;$/мес.
+        Количество SOL фиксируется quoting-окном (90 с, ±1.5 %) и подтверждается оракулом в момент подписи;
+        маршрут оплаты — <code>SOL → Jupiter → USDC</code>, газ платит игрок. Покупка откроется после
+        публикации программы (см. «Статус»).
       </p>
     </div>
   </div>
@@ -235,7 +249,7 @@
           <li>Кормление 3×/сут, уборка, весы</li>
           <li>1 бесплатный MatchScan/мес.</li>
         </ul>
-        <p class="t-foot">RCN: 500&nbsp;$ ≈ <span class="sol-in" data-usd="500">—</span> SOL</p>
+        <p class="t-foot">Животное: 500&nbsp;$ ≈ <span class="sol-in" data-usd="500">—</span> SOL · уровень не меняет вход, только инвойс (⚑ Q5/Q6)</p>
       </article>
       <article class="tier tier-hot">
         <div class="t-badge">Чаще всего берут</div>
@@ -248,7 +262,7 @@
           <li>+160 C welfare-бонуса</li>
           <li>Право предлагать темы вольера</li>
         </ul>
-        <p class="t-foot">RCN: 750&nbsp;$ ≈ <span class="sol-in" data-usd="750">—</span> SOL</p>
+        <p class="t-foot">Животное: 500&nbsp;$ · волна 2+ = 500&nbsp;$ +15&nbsp;% за волну ≈ <span class="sol-in" data-usd="575">—</span> SOL</p>
       </article>
       <article class="tier">
         <h4>Crown</h4>
@@ -260,7 +274,7 @@
           <li>2 именных события в квартал</li>
           <li>Голос в welfare-совете</li>
         </ul>
-        <p class="t-foot">RCN: 1 500&nbsp;$ ≈ <span class="sol-in" data-usd="1500">—</span> SOL</p>
+        <p class="t-foot">Crown-слот: sealed-bid со старта 575&nbsp;$ ≈ <span class="sol-in" data-usd="575">—</span> SOL · депозит в цену не входит</p>
       </article>
     </div>
 
@@ -350,7 +364,7 @@
     <div class="bre-left">
       <ol class="steps">
         <li><b>MatchScan</b><span>40 C + 3&nbsp;$BUNNY: диапазон редкости, риск инбридинга, health-флаги. Хеш результата — ончейн.</span></li>
-        <li><b>BreedingBond</b><span>подпись обеих сторон, депозит 100 C (burn). Одна самка = один активный bond.</span></li>
+        <li><b>BreedingBond</b><span>подпись обеих сторон, депозит 100 C — риск неслучившегося окрола на игроке: при пустой вязке депозит уходит в фонд содержания, 30 % начисляются только живым крольчатам. Одна самка = один активный bond.</span></li>
         <li><b>Введение 7 дней</b><span>соседние вольеры, подтверждение отсутствия агрессии.</span></li>
         <li><b>Сессии + подтверждение</b><span>присутствие оператора; пальпация/УЗИ на 12–14 день — без него выводок невалиден.</span></li>
         <li><b>Гнездо (crowdfund)</b><span>500 C с дедлайном. Окрола не будет → авто-возврат 60%.</span></li>
@@ -393,6 +407,7 @@
   <div class="mint-shell">
     <div class="mint-copy">
       <p class="kicker">06 · Genesis</p>
+      <div class="keyhole-deco" aria-hidden="true"><img src="./assets/keyhole-frame.jpg" alt="" loading="lazy"></div>
       <h2>888 кроликов.<br>Не 8 888. Потому что вольеров — 888.</h2>
       <p class="lead small">
         Дефицит здесь настоящий: он ограничен площадью, штатом и вет-пропускной способностью резиденции.
@@ -402,11 +417,11 @@
       <div class="mint-cta">
         <div class="wl-form" id="wlForm">
           <input type="email" id="wlEmail" placeholder="email для вайтлиста" aria-label="Email" autocomplete="email">
-          <button class="btn btn-primary" id="wlBtn">Вlist</button>
+          <button class="btn btn-primary" id="wlBtn">В лист</button>
         </div>
         <button class="btn btn-line" id="connectWallet2">Подключить кошелёк</button>
       </div>
-      <p class="fineprint" id="wlNote">Вайтлист даёт приоритет минта и −25% к цене Genesis. Никаких «ранних минтов за 3 друга».</p>
+      <p class="fineprint" id="wlNote">Вайтлист = волна 0 по 375&nbsp;$ (−25 % от волны 1); дальше каждая волна +15&nbsp;%. Никаких «ранних минтов за 3 друга».</p>
     </div>
     <div class="mint-art">
       <figure class="art-frame round">
@@ -451,26 +466,45 @@
   </div>
 </section>
 
-<!-- ══════════════ ОТКРЫТЫЕ ВОПРОСЫ ══════════════ -->
+<!-- ══════════════ ПРИНЯТЫЕ РЕШЕНИЯ ══════════════ -->
 <section class="sec" id="open-q">
-  <div class="st-grid" style="grid-template-columns:1fr">
-    <div class="oq-panel">
-      <p class="kicker">Блокеры продуктовой готовности · 17 вопросов</p>
-      <h2 style="font-size:clamp(20px,2.4vw,28px)">Пять вещей, которые я не решил за вас</h2>
-      <ol class="oq">
-        <li><b>Цепочка.</b> Вся спецификация (docs/12–14) и контракты написаны под <code>Base / ERC-4337 / EIP-7702</code>. Вы сказали <b>Solana</b>: это перепись пайплайна платежей, стандарта токена (Token-2022), пастбища карточек (Metaplex Core vs Bubblegum cNFT) и отказа от paymaster в привычном виде. Подтверждаете миграцию?</li>
-        <li><b>Цена входа.</b> Лендинг: <b>500 $ в SOL</b>. Модель: Burrow <b>450 $</b>, Warren 900, Crown 1 800 и <code>1 C = 0.05 $</code>. Оставить 500 $ только для волны 0 (и тогда какой ценой — остальные) или перевсеить документ?</li>
-        <li><b>Единица $CLOVER.</b> Лендинг использует 0.02 $, docs — 0.05 $. Если цена зафиксирована в USD, нужна либо привязка, либо «1 C = 0.05 $» как константа, а калькулятор пересчитается на +150 %.</li>
-        <li><b>Фиксация курса.</b> Сейчас 500 $ пересчитываются в SOL в браузере (клиентский курс). В проде так нельзя: нужен Pyth/Switchboard в момент подписи или quoting-окно 60–120 с с проскальзыванием ±1.5 %. Какой вариант?</li>
-        <li><b>Юрлицо и KYC.</b> Резиденция, лицензия на содержание, платёжный провайдер, гео-доступ (EEA / +KYC / глобально минус санкции) и статус RCN («право требования» vs «внутриигровой предмет») — без этого оферта не существует, а значит «купить кролика» технически невозможно.</li>
-      </ol>
-      <p class="fineprint" style="margin-top:14px">Полный список с вариантами и моими дефолтами (17 пунктов):
-        <a class="oq-link" href="./QUESTIONS.md"><code>landing/QUESTIONS.md</code> → Q1–Q16</a>.
-        Пункт 3 в файле — про стандарт карточки, 12–13 — про то, где живёт журнал заботы и кто отвечает за камеры.</p>
+  <div class="dec-panel">
+    <div class="dec-head">
+      <p class="kicker">17 вопросов закрыты · решения владельца 2026-10-10</p>
+      <h2>Ставка принята.<br><span class="accent">Карты открыты.</span></h2>
+      <p class="lead small">Зафиксировано в коде (<code>CFG</code> в <code>app.js</code>), в спецификации и в текстах витрины.
+      Всё, что осталось открытым, помечено ⚠.</p>
     </div>
+    <div class="dec-grid">
+      <div class="dec-card"><span class="dc-no">Q1</span><b>Solana — окончательно</b><p>Стек переписывается с Base / ERC-4337 / EIP-7702 на Solana: Anchor-программа, PDA-реестры, газ ≈ 0.000005 SOL. Solidity-эскизы остаются спецификацией механик, не кодом деплоя.</p></div>
+      <div class="dec-card"><span class="dc-no">Q2</span><b>$CLOVER на Token-2022</b><p>Transfer-fee зашита в сам токен, поэтому «комиссия заботы» не отключаема голосованием, а вывод энддаумента владельцу невозможен на уровне мяты.</p></div>
+      <div class="dec-card"><span class="dc-no">Q3</span><b>Bubblegum cNFT</b><p>Карточка животного — сжатый NFT + Metaplex attachment для genotype и доказательств заботы: 888 карточек без боли по стоимости, показ в кошельках через Metaplex.</p></div>
+      <div class="dec-card"><span class="dc-no">Q4</span><b>RCN = внутриигровой предмет</b><p>Не долговое требование и не ценная бумага — предмет права заботы. Формулировки «право требования» убраны с витрины и из FAQ.</p></div>
+      <div class="dec-card"><span class="dc-no">Q5</span><b>500 $ = только животное</b><p>Депозит на 12 месяцев в цену не входит. Содержание — отдельный месячный инвойс: Burrow 30 / Warren 42 / Crown 60 $.</p></div>
+      <div class="dec-card"><span class="dc-no">Q6</span><b>500 $ — цена волны 1</b><p>Волна 0 для вайтлиста — 375 $ (−25 %), далее +15 % за волну, Crown — sealed-bid со старта 575 $.</p></div>
+      <div class="dec-card"><span class="dc-no">Q7</span><b>Курс фиксируется окном</b><p>90 секунд, допуск ±1.5 %, подтверждение оракулом в момент подписи. На витрине работает то же окно с обратным отсчётом и кнопкой пересчёта.</p></div>
+      <div class="dec-card"><span class="dc-no">Q8</span><b>Газ платит игрок</b><p>Никаких субсидий и paymaster-абстракций: каждая подпись ≈ 0.000005 SOL за счёт владельца карточки.</p></div>
+      <div class="dec-card"><span class="dc-no">Q9</span><b>Swap-роут в кассе</b><p>SOL → Jupiter → USDC → DonationRouter. Протокол не держит SOL-обязательство; конверсия — событие пользователя.</p></div>
+      <div class="dec-card"><span class="dc-no">Q10</span><b>Оператор не указан</b><p>Юрлицо, адрес и лицензии на витрине не упоминаются; покупка закрыта до публикации условий участия.</p></div>
+      <div class="dec-card"><span class="dc-no">Q11</span><b>KYC пока не требуется</b><p>⚠ Открыто: гейт появится вместе с платёжным провайдером и юрлицом. Сейчас — вайтлист по email без верификации.</p></div>
+      <div class="dec-card"><span class="dc-no">Q12</span><b>Журнал заботы — гибрид</b><p>Деньги и права ончейн; кормление, вес и welfare — офчейн с Merkle-пруфом раз в сутки и 3 подписями оракула из 5.</p></div>
+      <div class="dec-card"><span class="dc-no">Q13</span><b>Стрим допустим при нормальных условиях</b><p>Ветеринарные стандарты содержания позволяют камеры 24/7 без звука и «тихий час»; риск ограничения не перекладывается на зрителя.</p></div>
+      <div class="dec-card"><span class="dc-no">Q14</span><b>Просрочка — к разработчикам</b><p>Продажа «в никуда» не идёт: при длительном CareDebt права переходят Warren Labs, животное остаётся в своём вольере и bonded-группе.</p></div>
+      <div class="dec-card"><span class="dc-no">Q15</span><b>Расчёт — $CLOVER по рынку</b><p>При продаже RCN расчёт идёт во внутреннем токене по рыночному курсу; выкуп за USDC/SOL обязательством протокола не является.</p></div>
+      <div class="dec-card"><span class="dc-no">Q16</span><b>Риск сведения — на игроке</b><p>Пустая вязка не возвращает депозит Bond — он уходит в фонд содержания; 30 % начисляются только живым зарегистрированным крольчатам.</p></div>
+      <div class="dec-card"><span class="dc-no">Q17</span><b>1 токен = 1 животное</b><p>888 животных = 888 карточек. Обязательное парное/групповое содержание остаётся правилом вольера, а не правилом владения.</p></div>
+      <div class="dec-card dec-more"><span class="dc-no">⚠</span><b>Что ещё открыто</b><p>Единица $CLOVER: 0.02 $ на витрине против 0.05 $ в <code>docs/05</code> — при выравнивании калькулятор пересчитается на +150 %. CareDeposit как продукт больше не продаётся, но как механизм залегает в модель.</p></div>
+    </div>
+    <p class="fineprint dec-foot">Обоснование, варианты и следствия каждого решения —
+      <a class="oq-link" href="./QUESTIONS.md"><code>landing/QUESTIONS.md</code> → Q1–Q17</a>.</p>
   </div>
 </section>
 </main>
+
+<figure class="hole-cta" aria-label="Нора">
+  <img src="./assets/bg-hole.jpg" alt="Нора, ведущая в зазеркалье" loading="lazy">
+  <figcaption><span class="dot live"></span> «Мы в стране чудес» · эфир резиденции идёт круглосуточно</figcaption>
+</figure>
 
 <footer class="site-foot">
   <div class="foot-in">
@@ -486,7 +520,8 @@
       Материалы не являются инвестиционным предложением и не содержат обещаний доходности.
       Токены дают права участия и заботы, а не право на прибыль. Владение животным
       предполагает ежемесячное содержание, ответственность и 7–12-летнее обязательство.
-      Содержание животных регулируется местным законодательством; перед покупкой прочитайте оферту резиденции.
+      Содержание животных регулируется местным законодательством; условия участия и правила резиденции
+      публикуются вместе с программой — до их публикации покупка недоступна.
     </p>
   </div>
   <div class="foot-bar"><span>© <span id="year"></span> Warren Protocol</span><span>Курсы: CoinGecko / Binance / KuCoin (публичные API)</span></div>

@@ -63,7 +63,7 @@ RabbitCareNFT #042  ──TBA──▶  0xBUN…042
                                                             └───────┬────────┘
                                      60d unpaid + grace             │ remediation ok
                                      ┌──────────────┐  ◀────────────┘
-                                     │  SEIZURE_    │── rescue auction ──▶ ACTIVE (u新 owner)
+                                     │  SEIZURE_    │── rescue auction ──▶ ACTIVE (new owner)
                                      │  PENDING     │── sanctuary ────────▶ SANCTUARY
                                      └──────────────┘
                                death (natural/vet) ──▶ LEGACY (burn, навсегда в зале славы)

@@ -9,9 +9,21 @@
 'use strict';
 
 /* ───────── конфигурация ───────── */
+/* Решения владельца продукта 2026-10-10 (Q1–Q17) зафиксированы здесь, чтобы код и тексты не разъезжались:
+   Q1 цепочка = Solana, переписываем стек   Q2 токен заботы = Token-2022 (transfer-fee, вывод энддаумента невозможен)
+   Q3 карточка = Bubblegum cNFT + Metaplex attachment   Q4 RCN = внутриигровой предмет (не право требования)
+   Q5 в цену входит только животное        Q6 500 $ = цена ВОЛНЫ 1, дальше +15% за волну, Crown = sealed-bid
+   Q7 цена фиксируется quoting-окном + оракулом            Q8 газ платит ИГРОК   Q9 вход через swap-роут (Jupiter)
+   Q10 юрлицо не указываем                  Q11 KYC пока не требуем              Q12 журнал заботы = гибрид
+   Q13 стрим легален при нормальных условиях, риск не на нас Q14 просрочка → животное переходит разработчикам
+   Q15 расчёт при продаже = $CLOVER по рынку Q16 риск сведения = риск игрока    Q17 один токен = одно животное */
 const CFG = {
-  RABBIT_USD: 500,           // цена кролика в USD (фиксируется в SOL в момент подписания)
-  CLOVER_USD: 0.02,          // 1 $CLOVER = 2 цента (внутренний референс единицы содержания)
+  RABBIT_USD: 500,           // ⚑ Q5/Q6: цена ВОЛНЫ 1, в цену входит только животное (без депозита)
+  WAVES: { wl0: 0.75, wave1: 1.00, step: 0.15 },   // вайтлист −25 %, далее +15 % за волну
+  CLOVER_USD: 0.02,          // 1 $CLOVER = 2 цента (внутренний референс; docs/05 — 0.05 $, Q3 по деньгам открыт)
+  QUOTE_TTL_S: 90,           // ⚑ Q7: окно фиксации курса
+  QUOTE_SLIP: 0.015,         // ⚑ Q7: допуск проскальзывания ±1.5 %
+  GAS_PAYER: 'player',       // ⚑ Q8: газ платит игрок, протокол не субсидирует
   PRICE_SOURCES: [
     { name:'CoinGecko', url:'https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd',
       pick: j => Number(j?.solana?.usd) },
@@ -21,7 +33,7 @@ const CFG = {
       pick: j => Number(j?.data?.price) },
   ],
   FALLBACK_SOL: 108.50,      // ≈ курс на 2026-10-10 (OKX/CoinGecko); только чтобы страница не показывала «—»
-                             // при недоступных API. НЕ финальная цена: см. Q4/Q7 в QUESTIONS.md
+                             // при недоступных API. В проде количество SOL считает оракул внутри quoting-окна (Q7)
   REFRESH_MS: 60_000,
   MINT_AT: (() => { const d = new Date(); d.setDate(d.getDate() + 10); d.setHours(18,0,0,0); return d; })(),
   OPS_COST_USD: 72.5,        // реальный опекс на животное/мес из модели docs/15
@@ -43,6 +55,8 @@ const store = {
 };
 
 let toastTimer;
+const wavePriceUsd = () => CFG.RABBIT_USD * CFG.WAVES.wave1;      // витрина: волна 1
+const wlPriceUsd   = () => CFG.RABBIT_USD * CFG.WAVES.wl0;        // волна 0 для вайтлиста
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.classList.add('is-on');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('is-on'), 3200);
@@ -73,7 +87,7 @@ async function loadSol() {
       return;
     } catch (e) { /* следующий источник */ }
   }
-  SOL.stale = true;               // все источники недоступны → fallback, честно помечаем
+  SOL.stale = true;               // все источники недоступны → fallback, честно помечаем (в проде — оракул, ⚑ Q7)
   renderSol();
 }
 
@@ -85,16 +99,45 @@ function renderSol() {
     ? `Источник недоступен — показано значение из кэша (${new Date(SOL.ts).toLocaleString('ru-RU')}). Финальный курс транзакции может отличаться`
     : `Курс: ${SOL.src} · обновлён ${new Date(SOL.ts).toLocaleTimeString('ru-RU')}`;
 
-  const priceSol = usd2sol(CFG.RABBIT_USD);
+  const priceSol = usd2sol(wavePriceUsd());
   $('#priceSol').textContent = C4(priceSol);
-  $('#mintBtnSol').textContent = C4(priceSol);
-  $('#priceNote').textContent = `$500 ÷ ${fmt(SOL.usd, 2)} $/SOL · ${SOL.src}${SOL.stale ? ' · приблизительный курс' : ''}`;
+  const mb = $('#mintBtnSol'); if (mb) mb.textContent = C4(priceSol);
+  $('#priceNote').textContent = `${fmt(wavePriceUsd())} $ (волна 1) ÷ ${fmt(SOL.usd, 2)} $/SOL · ${SOL.src}${SOL.stale ? ' · приблизительный курс' : ''}`;
   $$('.sol-in').forEach(n => {
     const usd = Number(n.dataset.usd || 0);
     n.textContent = usd ? C4(usd2sol(usd)) + ' SOL' : C4(priceSol) + ' SOL';
   });
+  renderQuote();
 }
+
+/* ⚑ Q7: quote-око. Финальную цену считает оракул в момент подписи; здесь — та же семантика на витрине */
+const QUOTE = { sol: 0, usd: 0, at: 0, lock: () => ({ sol: usd2sol(wavePriceUsd()), usd: wavePriceUsd(), at: Date.now() }) };
+function newQuote(loud = true) {
+  const q = QUOTE.lock();
+  QUOTE.sol = q.sol; QUOTE.usd = q.usd; QUOTE.at = q.at;
+  renderQuote();
+  if (loud) toast('Курс зафиксирован на ' + CFG.QUOTE_TTL_S + ' с · проскальзывание ±' + (CFG.QUOTE_SLIP * 100).toFixed(1) + ' %');
+}
+function renderQuote() {
+  const box = $('#quote'); if (!box) return;
+  const left = Math.max(0, CFG.QUOTE_TTL_S - Math.round((Date.now() - QUOTE.at) / 1000));
+  if (!QUOTE.at || left === 0) {
+    box.classList.add('is-old');
+    $('#qSol').textContent = '—'; $('#qLeft').textContent = 'нужен новый расчёт';
+    $('#qBar').style.width = '0%';
+    if (QUOTE.at) newQuote(false);          // истекло → тихий авто-пересчёт
+    return;
+  }
+  box.classList.remove('is-old');
+  $('#qSol').textContent = C4(QUOTE.sol);
+  $('#qLeft').textContent = left + ' с · ' + fmt(QUOTE.usd / QUOTE.sol, 2) + ' $/SOL';
+  $('#qBar').style.width = (left / CFG.QUOTE_TTL_S * 100).toFixed(1) + '%';
+}
+setInterval(renderQuote, 1000);
+$('#qRefresh')?.addEventListener('click', () => newQuote());
 renderSol();                       //hydration-рендер до первого ответа API
+newQuote(false);                   //стартовое quote-око (⚑ Q7), без тоста
+newQuote();                        //стартовое quote-око (⚑ Q7)
 setInterval(loadSol, CFG.REFRESH_MS);
 loadSol();
 
@@ -152,7 +195,8 @@ function openAccount() {
     title: 'Аккаунт',
     html: `<div class="mrow"><span>Адрес</span><b>${short(wallet.address)}</b></div>
       <div class="mrow"><span>Провайдер</span><b>${wallet.kind}</b></div>
-      <div class="mrow"><span>Целевой баланс заботы</span><b>${C4(usd2sol(360))} SOL</b></div>
+      <div class="mrow"><span>Целевой баланс заботы (12 мес. · Warren)</span><b>${C4(usd2sol(42 * 12))} SOL</b></div>
+      <div class="mrow"><span>Газ</span><b>платите вы · ≈0.000005 SOL за подпись</b></div>
       <code class="addr">${wallet.address}</code>
       <div class="mbox">Средства не списываются: платёжный маршрут откроется вместе с деплоем программы
       <code>warren-care</code> и офертой резиденции. Сейчас страница — витрина продукта.</div>`,
@@ -249,7 +293,9 @@ function openRabbit(r) {
       <div class="mrow"><span>Коэффициент инбридинга</span><b>${r.inb}${parseFloat(r.inb) > 6.25 ? ' ⚠️' : ''}</b></div>
       <div class="mrow"><span>Ежемесячное содержание</span><b>${money(invoiceFor(r.tier))} ≈ ${C4(usd2sol(invoiceFor(r.tier)))} SOL</b></div>
       ${free
-        ? `<div class="mbox ok">Свободен: можно забронировать за <b>${C4(usd2sol(CFG.RABBIT_USD))} SOL</b>. Бронь означает принятие оферты резиденции и 12-месячного депозита на содержание.</div>`
+        ? `<div class="mbox ok">Свободен: <b>${C4(usd2sol(wavePriceUsd()))} SOL</b> (волна 1, ⚑ Q6). В цену входит только животное
+        + его карточка-cNFT и 12-месячное обязательство по содержанию — его вы оплачиваете отдельным инвойсом
+        (⚑ Q5: депозит в цену не включён).</div>`
         : `<div class="mbox">Животное уже в частных руках. Можно оставить передержку (Resident Pass) или поставить оферту — право первого отказа у второй стороны разведения 30 дней.</div>`}
       <div class="mlist">
         <li><span>Роялти линии при перепродаже</span><code>25 % (5/10/5/5)</code></li>
@@ -467,9 +513,9 @@ renderTree();
 
 /* ═══════════ 7. MINT ═══════════ */
 const WAVES = [
-  { n:'Волна 0 · вайтлист', s:'120 слотов', p:'−25 %', st:'is-now', e:'🎟' },
-  { n:'Волна 1 · общая', s:'320 слотов', p:'500 $ в SOL', st:'', e:'🐇' },
-  { n:'Волна 2 · Crown', s:'48 слотов', p:'sealed-bid', st:'', e:'👑' },
+  { n:'Волна 0 · вайтлист', s:'120 животных', p:'375 $ · −25 %', st:'is-now', e:'🎟' },
+  { n:'Волна 1 · общая', s:'320 животных', p:'500 $ в SOL', st:'', e:'🐇' },
+  { n:'Волна 2 · Crown', s:'48 животных', p:'sealed-bid, старт 575 $', st:'', e:'👑' },
   { n:'Волна 3 · kit-аукционы', s:'крольчата', p:'Dutch −6 %/12 ч', st:'is-done', e:'🐣' },
   { n:'Rescue-аукционы', s:'изъятые', p:'1 SOL старт', st:'is-now', e:'🛟' },
   { n:'Очередь вольеров', s:'360 в листе', p:'открыто 888', st:'', e:'⏳' },
@@ -486,19 +532,21 @@ $('#mintBtn').addEventListener('click', async () => {
   buyFlow();
 });
 function buyFlow() {
-  const sol = usd2sol(CFG.RABBIT_USD);
+  const sol = QUOTE.sol || usd2sol(wavePriceUsd());
   openModal({
-    title: 'Бронь Genesis · 500 $',
+    title: 'Кассовое окно · волна 1',
     html: `
-      <div class="mrow"><span>Курс на сейчас</span><b>$${fmt(SOL.usd, 2)} / SOL · ${SOL.src}${SOL.stale ? ' (приблизительно)' : ''}</b></div>
-      <div class="mrow"><span>Цена кролика</span><b>${C4(sol)} SOL</b></div>
-      <div class="mrow"><span>Депозит содержания 12 мес.</span><b>${C4(usd2sol(360))} SOL</b></div>
-      <div class="mrow"><span>Комиссия сети</span><b>≈ 0.000005 SOL</b></div>
-      <div class="mbox">⚠️ Платёжный маршрут ещё не опубликован: программа <code>warren-care</code> в разработке.
-      Сейчас это запись в лист ожидания — без подписания транзакции. Финальное количество SOL определяется
-      курсом оракула в момент подписания, а не значением на экране.</div>`,
+      <div class="mrow"><span>Цена животного (волна 1)</span><b>${fmt(wavePriceUsd())} $</b></div>
+      <div class="mrow"><span>Зафиксировано в SOL</span><b>${C4(sol)} SOL</b></div>
+      <div class="mrow"><span>Окно курса</span><b>${CFG.QUOTE_TTL_S} с · проскальзывание ±${(CFG.QUOTE_SLIP * 100).toFixed(1)} %</b></div>
+      <div class="mrow"><span>Маршрут оплаты (⚑ Q9)</span><code>SOL → Jupiter → USDC → DonationRouter</code></div>
+      <div class="mrow"><span>Содержание (⚑ Q5, отдельно)</span><b>30–60 $/мес. инвойсом</b></div>
+      <div class="mrow"><span>Газ (⚑ Q8)</span><b>за счёт игрока · ≈0.000005 SOL</b></div>
+      <div class="mbox">⚠️ Маршрут ещё не опубликован: программа <code>warren-care</code> на Solana в разработке,
+      карточка — <code>Bubblegum cNFT</code>, токен заботы — <code>Token-2022</code>. Сейчас это запись в лист
+      ожидания без подписи; финальное количество SOL считает оракул внутри окна, а не значение на экране.</div>`,
     actions: [
-      { label:'Записать в лист ожидания', kind:'primary', fn: () => { closeModal(); toast('Вы в листе · приоритет волна 0'); wlPush(); } },
+      { label:'Записать в лист ожидания', kind:'primary', fn: () => { closeModal(); toast('Вы в листе · приоритет на волну 0 (−25 %)'); wlPush(); } },
       { label:'Позже', kind:'line' },
     ],
   });
@@ -530,7 +578,7 @@ $('#wlBtn').addEventListener('click', () => {
   const list = store.get('waitlist', []);
   if (!list.includes(v)) list.push(v);
   store.set('waitlist', list);
-  input.value = ''; $('#wlNote').textContent = 'Готово: ' + v + ' в списке. Волна 0 · приоритет · −25 % к цене Genesis.';
+  input.value = ''; $('#wlNote').textContent = 'Готово: ' + v + ' в списке. Волна 0 · 375 $ (−25 % от волны 1) · приоритет 48 ч.';
   wlPush(); toast('Вы в вайтлисте');
 });
 
@@ -549,7 +597,7 @@ $('#wlBtn').addEventListener('click', () => {
 /* ═══════════ 8. FAQ ═══════════ */
 const FAQ = [
   ['Что именно я покупаю за 500 $?',
-   'Токен RCN на Solana — <b>условное право требования на опеку</b> конкретного животного, живущего в резиденции: смотреть 24/7, определять расписание, обогащение, разведение, голосовать по декору, продавать право, получать роялти линии. Это не «собственность на кролика» в бытовом смысле и не право забрать животное домой. В цену входит 12-месячный депозит содержания — он оплачивает сено и труд, а не маржу.'],
+   'RCN — <b>внутриигровой предмет</b> (так решил продукт, ⚑ Q4), а не долговое требование и не ценная бумага: он даёт права участия за конкретным живым животным в резиденции — смотреть 24/7, задавать расписание, обогащение, разведение, голосовать по декору, продавать предмет, получать роялти линии. Он не даёт права забрать кролика домой и не обещает доход. В 500 $ (волна 1) входит <b>только животное и его карточка</b>; содержание — отдельный месячный инвойс 30–60 $ (⚑ Q5).'],
   ['Почему кроликов ровно 888?',
    'Потому что столько <b>реальных вольеров</b>: 160 слотов на резиденцию × 5 резиденций к концу roadmap. Слот закрывается только когда построено помещение, подписан вет-партнёр и опубликован <code>CapacityProof</code>. «Добить минт под спрос» невозможно контрактом — это и есть настоящий дефицит.'],
   ['Почему цена в SOL, а не в долларах?',
@@ -561,11 +609,15 @@ const FAQ = [
   ['Можно ли вывести донаты, которые мне оставили?',
    'Нет, и это не ограничение «для галочки»: у энддаумента животного <b>нет функции вывода</b>. Расход возможен только через <code>MerchantGateway</code> whitelisted-вендорами (корма, вет, оборудование, услуги резиденции). Владелец зарабатывает на правах — продажа RCN, роялти, титулы, призы, — а не на содержании.'],
   ['Что если кролик умрёт?',
-   'Статус <code>Legacy</code>: токен остаётся в реестре с мемориальными метаданными, остаток энддаумента уходит в welfare-фонд на выбранного сообществом подопечного, а потомки получают ауру предка (+2..+6 к редкости). Если смерть наступила при низком WelfareScore по вине резиденции — выплату покрывает страховка (до $600 или 3 месяца содержания).'],
+   'Статус <code>Legacy</code>: cNFT остаётся в реестре с мемориальными метаданными, остаток энддаумента уходит в welfare-фонд на выбранного сообществом подопечного, а потомки получают ауру предка (+2..+6 к редкости). Если смерть наступила при низком WelfareScore по вине резиденции — выплату покрывает страховка (до $600 или 3 месяца содержания).'],
   ['Где гарантия, что кролика реально кормят?',
    'Нигде в смысле «обещания». Есть проверяемые данные: автовесы, RFID-кормушки, счётчик кормлений, ИИ-детекция поведения, журнал оператора и 3 подписи оракула из 5 (персонал, ветеринар, внешний аудитор, ИИ-сервис, менеджер). Расхождение ончейн/факт дольше 48 часов → статус <code>Disputed</code> и независимая проверка за счёт фонда.'],
   ['Какие комиссии и кто их платит?',
    'При продаже RCN — 25 % совокупно: 5 % маркетплейс, 10 % welfare-сбор, 5 % родителю-линии (40/40/20 между отцом, матерью и фондом), 5 % DAO. Все 25 % видны в калькуляторе до листинга; «скрытых» комиссий нет, и уменьшить welfare-сбор голосованием нельзя — он зашит в неизменяемые константы.'],
+  ['Что будет, если я перестану платить и не найду покупателя?',
+   'Животное <b>не продают и не «изымают в никуда»</b>: права по карточке переходят разработчикам (⚑ Q14), а само животное остаётся в том же вольере с тем же bonded-кругом — смена группы для кролика стресс опаснее, чем смена владельца. Дальше оно живёт на funds из welfare-резерва и донатах, ваша карточка получает статус <code>Custody: Warren Labs</code>. Вернуть права можно, закрыв долг и оплатив месяц вперёд.'],
+  ['Риск «сведения» не сработал — кто платит?',
+   'Игрок (⚑ Q16). <code>BreedingBond</code> — двусторонний опцион: если окрола не случилось, депозит bond не возвращается, а уходит в фонд содержания; 30 % протоколу начисляются <b>только на живых зарегистрированных крольчат</b>, «за несостоявшуюся вязку» роялти нет. Вет-расходы на подтверждение бесплодия — тоже сторона игроков.'],
   ['Это инвестиция?',
    'Нет. Токены дают права участия и заботы, а не право на доход; цена актива — следствие спроса, а не обещание. Любые формулировки о «доходности» запрещены политикой проекта, а buyback и сжигание — механика эмиссии, не дивиденд.'],
 ];
