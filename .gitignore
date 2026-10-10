@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Симуляция: артефакты пересчёта (RESULTS.md и simulate.py — в репозитории, остальное — нет)
+research/economy/model_baseline.csv
+research/economy/model_*.csv
+research/economy/tokenomics_model.png
+research/economy/out/
+
+# Foundry / solidity (когда начнётся фаза реальных контрактов)
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/lib/
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+
+# отчёт по месяцам (пересобирается командой --report)
+research/economy/model_baseline.txt
