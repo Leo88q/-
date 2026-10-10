@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Warren Protocol — живой карликовый кролик в токене на Solana</title>
+<meta name="description" content="Фиджитал-протокол: один токен = один живой кролик в сертифицированной резиденции, круглосуточный стрим 24/7, донаты на заботу, родословная и генетика. Genesis: 888 животных, 500 $ в SOL.">
+<meta name="theme-color" content="#0E1614">
+<meta property="og:title" content="Warren Protocol — кролики, за которыми можно смотреть вечно">
+<meta property="og:description" content="888 живых карликовых кроликов. Стрим 24/7, забота как механика,Solana.">
+<meta property="og:image" content="./assets/hero-warren.jpg">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐇</text></svg>">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="bg-wash" aria-hidden="true"></div>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header class="site-head" id="top">
+  <a class="brand" href="#top" aria-label="Warren Protocol">
+    <span class="brand-mark">🐇</span>
+    <span class="brand-txt"><b>Warren</b><span>Protocol</span></span>
+  </a>
+  <nav class="nav" aria-label="Разделы">
+    <a href="#warren">Кролики</a>
+    <a href="#mechanics">Механики</a>
+    <a href="#care">Содержание</a>
+    <a href="#breeding">Разведение</a>
+    <a href="#mint">Genesis</a>
+  </nav>
+  <div class="head-right">
+    <div class="sol-chip" id="solChip" title="Курс SOL — живой, из публичных источников">
+      <span class="dot live"></span><span class="sol-usd" id="solUsd">…</span>
+      <span class="sol-sub">1&nbsp;SOL</span>
+    </div>
+    <button class="btn btn-ghost" id="walletBtn" data-intent="connect">Кошелёк</button>
+  </div>
+</header>
+
+<main>
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow"><span class="dot pulse"></span> Genesis · 888 живых животных · Solana</div>
+    <h1 class="h-display">Один токен.<br>Один живой кролик.<br><span class="accent">Камера — 24/7.</span></h1>
+    <p class="lead">
+      Warren Protocol — фиджитал-резиденция карликовых кроликов. Вы покупаете не картинку, а
+      <b>право заботиться</b> о настоящем животном: смотреть в прямом эфире, кормить, выводить на
+      прогулку, обновлять вольер, сводить по договорённости и наследовать родословную.
+      <b>Нельзя заминтить больше кроликов, чем есть вольеров.</b>
+    </p>
+
+    <div class="price-card">
+      <div class="pc-row">
+        <div>
+          <div class="pc-label">Стоимость кролика (Genesis)</div>
+          <div class="pc-price">500&nbsp;<span class="pc-cur">USD</span></div>
+        </div>
+        <div class="pc-eq">=</div>
+        <div class="pc-sol">
+          <div class="pc-label">в SOL по курсу</div>
+          <div class="pc-price"><span id="priceSol">—</span><span class="pc-cur">SOL</span></div>
+          <div class="pc-note" id="priceNote">считаем от $500 ÷ текущий курс</div>
+        </div>
+      </div>
+      <div class="pc-meta">
+        <span>⏳ <b id="countdown">—</b> до открытия минта</span>
+        <span>🎟 вайтлист: <b id="wlCount">1 412</b> адресов</span>
+        <span>🏠 слотов: <b>888</b> = столько вольеров реально построено</span>
+      </div>
+      <div class="pc-actions">
+        <button class="btn btn-primary" id="mintBtn">Забронировать за <span id="mintBtnSol">—</span> SOL</button>
+        <a class="btn btn-line" href="#care">Что входит в 500&nbsp;$</a>
+      </div>
+      <p class="fineprint">
+        Токен — право требования на опеку и участие, а не «собственность на животное».
+        Цена в SOL фиксируется в момент подписания транзакции. Платёж и минт доступны после
+        публикации смарт-контракта (см. «Статус»).
+      </p>
+    </div>
+  </div>
+
+  <div class="hero-art">
+    <figure class="art-frame">
+      <img src="./assets/hero-warren.jpg" alt="Восемь карликовых кроликов смотрят в камеру сверху" width="1536" height="1024">
+      <figcaption class="art-tag"><span class="dot live"></span> «Первая нора» · резиденция Nordvik · прямой эфир</figcaption>
+    </figure>
+    <div class="float-stat fs-1"><b>103&nbsp;$</b><span>средний чек заботы<br>на животное/мес.</span></div>
+    <div class="float-stat fs-2"><b>24/7</b><span>камеры без звука<br>и «тихий час»</span></div>
+    <div class="float-stat fs-3"><b>86&nbsp;%</b><span>доната уходит<br>в пользу кролика</span></div>
+  </div>
+</section>
+
+<!-- ══════════════ TRUST STRIP ══════════════ -->
+<section class="strip">
+  <div class="strip-in">
+    <div><b>3 × 2 × 1 м</b><span>минимум на пару — по нормам RSPCA/RWA, проверяется на вольере</span></div>
+    <div><b>никогда не один</b><span>только bonded-пара или группа — гейт в смарт-контракте</span></div>
+    <div><b>2 окрола в год</b><span>жёсткий лимит на самку, 4 за жизнь. Увеличить нельзя</span></div>
+    <div><b>0 выводов</b><span>донаты нельзя вывести владельцу — только вендор и забота</span></div>
+    <div><b>$CLOVER</b><span>1 токен = 1 единица содержания; эмиссия ≤ 1.25 × сожжённое</span></div>
+  </div>
+</section>
+
+<!-- ══════════════ LIVE WARREN / CARDS ══════════════ -->
+<section class="sec" id="warren">
+  <header class="sec-head">
+    <div>
+      <p class="kicker">01 · Warren Live</p>
+      <h2>Кролики, которые уже живут<br>и уже смотрят на вас</h2>
+    </div>
+    <p class="sec-note">
+      Это реестр резидентов: каждое животное имеет чип, ветеринарный журнал, WelfareScore и камеру.
+      Карточка — витрина реального состояния, а не «прогресс-бар вымышленного существа».
+    </p>
+  </header>
+
+  <div class="filters" role="tablist" aria-label="Фильтр по редкости">
+    <button class="chip is-on" data-rar="all">Все <span>12</span></button>
+    <button class="chip" data-rar="Common">Common <span>3</span></button>
+    <button class="chip" data-rar="Uncommon">Uncommon <span>3</span></button>
+    <button class="chip" data-rar="Rare">Rare <span>2</span></button>
+    <button class="chip" data-rar="Epic">Epic <span>2</span></button>
+    <button class="chip" data-rar="Legendary">Legendary <span>1</span></button>
+    <button class="chip" data-rar="Mythic">Mythic <span>1</span></button>
+  </div>
+
+  <div class="cards" id="cards"></div>
+
+  <div class="warren-bottom">
+    <figure class="shot">
+      <img src="./assets/rabbit-cards.jpg" alt="Коллекционные карточки кроликов на мху с ромашками" loading="lazy">
+      <figcaption>Карточка животного = метаданные токена: окрас, характер, welfare, статус стрима</figcaption>
+    </figure>
+    <div class="shot-copy">
+      <h3>Что видно в карточке</h3>
+      <ul class="ticks">
+        <li><b>WelfareScore 0–100</b> — весы, активность, зуб/когти, обогащение. Обновляется оракулом 5 подписантов.</li>
+        <li><b>Genotype</b> — 6 локусов + особые гены, рассчитан детерминированно, проверяется офчейн.</li>
+        <li><b>Счётчик заботы</b> — сколько дней корма оплачено, когда следующая прогулка, серия заботы.</li>
+        <li><b>Родословная</b> — до 6 поколений, титулы предков и «аура наследия»: у хорошо прожитой жизни есть цена для потомков.</li>
+      </ul>
+      <div class="card-actions">
+        <button class="btn btn-primary" data-open="demo-stream">Смотреть демо-эфир</button>
+        <a class="btn btn-line" href="#mechanics">Как это работает</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ MECHANICS ══════════════ -->
+<section class="sec sec-dark" id="mechanics">
+  <header class="sec-head">
+    <div>
+      <p class="kicker">02 · Что можно делать</p>
+      <h2>Забота как игровой цикл,<br>а не как «оплата за контент»</h2>
+    </div>
+    <p class="sec-note">Каждое действие оставляет доказуемый след: событие в эфире, аттестацию, коллекционный клип и — главное — измеримую пользу животному.</p>
+  </header>
+
+  <div class="grid-3">
+    <article class="m-card">
+      <div class="m-ico">📹</div>
+      <h3>Стрим 24/7</h3>
+      <p>2–4 камеры на вольер, сумеречный режим, «binky-cam» сверху. ИИ фиксирует кормления, поилку, прыжки, «замирание» — и превращает это в данные о welfare, а не только в клипы.</p>
+      <p class="m-foot"><span class="tag">WebRTC &lt;1.5 с</span><span class="tag">ночью без звука</span><span class="tag">архив 72 ч</span></p>
+    </article>
+    <article class="m-card">
+      <div class="m-ico">🥕</div>
+      <h3>Донат в один тап</h3>
+      <p>От 2&nbsp;$: зелень, любимое лакомство, свежая вода, прогулка 30 мин, когтепочесание. Исполнение — в течение 24 часов или авто-возврат. Имя донатера — в эфире и в метаданных.</p>
+      <p class="m-foot"><span class="tag">20–90 C</span><span class="tag">SLA 24 ч</span><span class="tag">авто-возврат</span></p>
+    </article>
+    <article class="m-card">
+      <div class="m-ico">🎯</div>
+      <h3>Цели с гарантией</h3>
+      <p>«Ремонт клетки», «вет-маршрут», «гнездо для выводка» — фиксированная смета, дедлайн, авто-возврат всем, если не собрано или не исполнено. Прогресс виден в прямом эфире.</p>
+      <p class="m-foot"><span class="tag">смета 150 C+</span><span class="tag">refund-if-not</span><span class="tag">штраф резиденции</span></p>
+    </article>
+    <article class="m-card">
+      <div class="m-ico">🏰</div>
+      <h3>Клетка и ремонт</h3>
+      <p>Клетка — не «скин», а аренда с характеристиками: площадь, укрытия, вертикаль, безопасность. Предметы ломаются (кролик их съедает), и это честный постоянный стик.</p>
+      <p class="m-foot"><span class="tag">durability 1–8</span><span class="tag">theme of month</span><span class="tag">+3..+8 welfare</span></p>
+    </article>
+    <article class="m-card">
+      <div class="m-ico"></div>
+      <h3>Косметика и праздники</h3>
+      <p>Капор, шарф, плащ, корона — всё миниатюрное, одобренное ветеринаром, носится по 20–40 минут и под присмотром. День рождения: 12 спонсорских слотов в год, торт из сена, клип-набор.</p>
+      <p class="m-foot"><span class="tag">нет «вечной» носки</span><span class="tag">12 слотов/год</span><span class="tag">ERC-1155</span></p>
+    </article>
+    <article class="m-card">
+      <div class="m-ico">🏆</div>
+      <h3>Конкурсы каждую неделю</h3>
+      <p>Binky Break, Agility Cup, Chin of the Week, Puzzle Sprint, Fluff Gauge, Hutch Design. Судейство: 40% эксперты / 40% сообщество / 20% объективные данные. Приз — в фонд кролика.</p>
+      <p class="m-foot"><span class="tag">взнос 2 C</span><span class="tag">70% в энддаумент</span><span class="tag">commit-reveal</span></p>
+    </article>
+  </div>
+
+  <div class="split">
+    <figure class="shot">
+      <img src="./assets/stream-room.jpg" alt="Комната резиденции с камерой и четырьмя кроликами" loading="lazy">
+      <figcaption>Студийный угол резиденции: камера, но без звука и без света в лицо</figcaption>
+    </figure>
+    <figure class="shot">
+      <img src="./assets/contest-agility.jpg" alt="Кролики на полосе препятствий" loading="lazy">
+      <figcaption>Agility Cup: три попытки, тайминг с камеры, результат — в ончейн-реестре</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ══════════════ CARE / PRICE ══════════════ -->
+<section class="sec" id="care">
+  <header class="sec-head">
+    <div>
+      <p class="kicker">03 · Ответственность</p>
+      <h2>500&nbsp;$ — это вход.<br>Дальше начинается забота</h2>
+    </div>
+    <p class="sec-note">Мы не прячем ежемесячные расходы в «газ» и не называем их «доходностью». Содержание — обязанность владельца, обеспеченная реальным расходом сена, а не мета-рейтом.</p>
+  </header>
+
+  <div class="care-wrap">
+    <div class="tiers">
+      <article class="tier">
+        <h4>Burrow</h4>
+        <p class="t-price">1 500&nbsp;<span>C</span> <em>/ ~$30</em></p>
+        <p class="t-sub">в месяц за животное</p>
+        <ul>
+          <li>Место в общей комнате-норе (пара/группа)</li>
+          <li>2 камеры, базовый welfare-пакет</li>
+          <li>Кормление 3×/сут, уборка, весы</li>
+          <li>1 бесплатный MatchScan/мес.</li>
+        </ul>
+        <p class="t-foot">RCN: 500&nbsp;$ ≈ <span class="sol-in" data-usd="500">—</span> SOL</p>
+      </article>
+      <article class="tier tier-hot">
+        <div class="t-badge">Чаще всего берут</div>
+        <h4>Warren</h4>
+        <p class="t-price">2 100&nbsp;<span>C</span> <em>/ ~$42</em></p>
+        <p class="t-sub">в месяц за животное</p>
+        <ul>
+          <li>Bonded-пара, 3 камеры + binky-cam</li>
+          <li>Приоритет в вет-очереди</li>
+          <li>+160 C welfare-бонуса</li>
+          <li>Право предлагать темы вольера</li>
+        </ul>
+        <p class="t-foot">RCN: 750&nbsp;$ ≈ <span class="sol-in" data-usd="750">—</span> SOL</p>
+      </article>
+      <article class="tier">
+        <h4>Crown</h4>
+        <p class="t-price">3 000&nbsp;<span>C</span> <em>/ ~$60</em></p>
+        <p class="t-sub">в месяц за животное</p>
+        <ul>
+          <li>Отдельная студия-комната, 4 камеры</li>
+          <li>Персональное расписание прогулок</li>
+          <li>2 именных события в квартал</li>
+          <li>Голос в welfare-совете</li>
+        </ul>
+        <p class="t-foot">RCN: 1 500&nbsp;$ ≈ <span class="sol-in" data-usd="1500">—</span> SOL</p>
+      </article>
+    </div>
+
+    <div class="care-calc">
+      <h3>Калькулятор месяца заботы</h3>
+      <p class="cc-note">Двигайте — увидите, что «содержание» — это не абстракция, а конкретные дни сена и прогулки.</p>
+      <div class="calc-row"><label for="cLevel">Уровень содержания</label>
+        <input type="range" id="cLevel" min="0" max="2" value="1"><span class="calc-out" id="oLevel">Warren</span></div>
+      <div class="calc-row"><label for="cWalks">Прогулки (оплачивают донатеры)</label>
+        <input type="range" id="cWalks" min="0" max="20" value="6"><span class="calc-out" id="oWalks">6</span></div>
+      <div class="calc-row"><label for="cItems">Новые предметы в вольер</label>
+        <input type="range" id="cItems" min="0" max="8" value="2"><span class="calc-out" id="oItems">2</span></div>
+      <div class="calc-row"><label for="cVet">Вет-чекапы</label>
+        <input type="range" id="cVet" min="0" max="4" value="1"><span class="calc-out" id="oVet">1</span></div>
+
+      <div class="calc-total">
+        <div>
+          <div class="ct-label">Ваш вклад</div>
+          <div class="ct-big"><span id="tMine">—</span> <span class="u">C</span></div>
+          <div class="ct-sub">≈ $<span id="tMineUsd">—</span> · <span class="sol-in" data-usd="0">—</span> SOL</div>
+        </div>
+        <div>
+          <div class="ct-label">Ядро покрыто</div>
+          <div class="ct-big"><span id="tCover">—</span><span class="u">%</span></div>
+          <div class="ct-sub">от $72.5 реального опекса в месяц</div>
+        </div>
+        <div>
+          <div class="ct-label">Всего за месяц</div>
+          <div class="ct-big"><span id="tFull">—</span> <span class="u">C</span></div>
+          <div class="ct-sub">разницу добирают донатеры · <button class="gap-link" id="gapBuy" type="button">—</button></div>
+        </div>
+        <div>
+          <div class="ct-label">Welfare-эффект</div>
+          <div class="ct-big">+<span id="tWel">—</span></div>
+          <div class="ct-sub">баллов за месяц</div>
+        </div>
+      </div>
+      <div class="bar"><i id="barFill"></i></div>
+      <p class="cc-note" id="ccHint"></p>
+      <div class="card-actions">
+        <button class="btn btn-primary" id="boardingBtn">Взять передержку вместо покупки · 45&nbsp;$/мес</button>
+        <a class="btn btn-line" href="#mint">Стать владельцем</a>
+      </div>
+      <p class="fineprint">Передержка (Resident Pass) — законный способ участвовать без 12-летнего обязательства: имя на табличке,
+      голос по декору, скидка на донаты, приоритет при освобождении слота. По модели это <b>самый сильный
+      финансовый рычаг проекта</b>: упругость EBITDA к цене передержки — 9.76, к цене NFT — 0.00.</p>
+    </div>
+  </div>
+
+  <figure class="wide-shot">
+    <img src="./assets/hutch-burrow-warren.jpg" alt="Три макета вольеров: Burrow, Warren и Crown" loading="lazy">
+    <figcaption>Макеты habitat-ов: Burrow (общая нора), Warren (пара + балкон), Crown (двухбашенная студия). Реальные вольеры строятся по нормам 3×2×1 м на пару</figcaption>
+  </figure>
+</section>
+
+<!-- ══════════════ DONATIONS DEMO ══════════════ -->
+<section class="sec sec-tint" id="donate">
+  <header class="sec-head">
+    <div><p class="kicker">04 · Донаты</p><h2>Деньги не могут уйти<br>от кролика</h2></div>
+    <p class="sec-note">80% — в энддаумент животного (только whitelisted-вендоры), 10% — эфир и сообщество, 10% — фонд rescue-содержания. У энддаумента нет функции вывода: это свойство кода, а не обещание.</p>
+  </header>
+
+  <div class="donate-grid">
+    <div class="goals" id="goals"></div>
+    <div class="donate-side">
+      <div class="mini-stream">
+        <div class="ms-top"><span class="dot live"></span> LIVE · nimbus_042</div>
+        <img src="./assets/genesis-legendary.jpg" alt="Легендарный ангорский кролик в норе Алисы" loading="lazy">
+        <div class="ms-stats"><span>Welfare <b id="msW">88</b></span><span>Корм на <b id="msD">6</b> дн.</span><span>Зрителей <b id="msV">412</b></span></div>
+      </div>
+      <div class="quick" id="quick"></div>
+      <p class="fineprint">В демо-режиме кнопки не списывают средства: они показывают, как выглядит
+      заявка и как растёт прогресс цели. Реальный поток: USDC/SOL → <code>DonationRouter</code> →
+      <code>MerchantGateway</code> → фото-отчёт и аттестация в эфире.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ BREEDING ══════════════ -->
+<section class="sec sec-dark" id="breeding">
+  <header class="sec-head">
+    <div><p class="kicker">05 · Генетика</p><h2>Сведение по договорённости,<br>не по кнопке «размножить»</h2></div>
+    <p class="sec-note">BreedingBond — двусторонний контракт в блокчейне: срок, сплит, роялти, отказные права. Протокол берёт 30% выводка в пользу фонда содержания, а биология ограничена ончейн-лимитами.</p>
+  </header>
+
+  <div class="bre-grid">
+    <div class="bre-left">
+      <ol class="steps">
+        <li><b>MatchScan</b><span>40 C + 3&nbsp;$BUNNY: диапазон редкости, риск инбридинга, health-флаги. Хеш результата — ончейн.</span></li>
+        <li><b>BreedingBond</b><span>подпись обеих сторон, депозит 100 C (burn). Одна самка = один активный bond.</span></li>
+        <li><b>Введение 7 дней</b><span>соседние вольеры, подтверждение отсутствия агрессии.</span></li>
+        <li><b>Сессии + подтверждение</b><span>присутствие оператора; пальпация/УЗИ на 12–14 день — без него выводок невалиден.</span></li>
+        <li><b>Гнездо (crowdfund)</b><span>500 C с дедлайном. Окрола не будет → авто-возврат 60%.</span></li>
+        <li><b>Окрол и ревил</b><span>28–35 дней; чип и вес каждого крольчонка; генотипы считаются детерминированно и публикуются.</span></li>
+        <li><b>Подсамкой 49 дней</b><span>жёсткий лок: продажа, переезд и новое спаривание невозможны.</span></li>
+        <li><b>Распределение</b><span>крольчата ≥56 дней; 30% — протоколу; роялти и ROFR 30 дней у второй стороны.</span></li>
+      </ol>
+      <div class="lim">
+        <span><b>2</b> окрола/год</span><span><b>4</b> за жизнь</span><span><b>120</b> дней отдыха</span>
+        <span><b>≤12.5%</b> инбридинг</span><span><b>56</b> дней до передачи</span>
+      </div>
+    </div>
+    <aside class="pedigree">
+      <h3>Родословная и «аура наследия»</h3>
+      <div class="tree" id="tree" aria-label="Герб родословной: 3 поколения"></div>
+      <ul class="ticks small">
+        <li>До 6 поколений, полнота дерева даёт <b>PedigreeScore</b> (до 65 из 1000).</li>
+        <li>Титулы предков (Golden Carrot, Warren Cup) — множители +2/+1 очка ауры.</li>
+        <li>Уход за родителем: CareScore ≥90 → <b>+1 vitality</b> каждому потомку.</li>
+        <li>После смерти животного линия получает <b>Legacy</b>: +2..+6 к редкости потомков. Хорошая жизнь — это актив.</li>
+      </ul>
+      <div class="rar" id="rar"></div>
+    </aside>
+  </div>
+
+  <div class="split">
+    <figure class="shot">
+      <img src="./assets/hutch-crown-palace.jpg" alt="Роскошный многоуровневый дворец-вольер для кролика" loading="lazy">
+      <figcaption>Crown-habitat: двухуровневый дом с балконом, куполом и латунной табличкой с именем</figcaption>
+    </figure>
+    <figure class="shot">
+      <img src="./assets/cosmetics-catalog.jpg" alt="Каталог миниатюрных аксессуаров для кроликов" loading="lazy">
+      <figcaption>Косметика: всё носится ≤40 минут, под присмотром и с ветеринарным допуском</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ══════════════ MINT ══════════════ -->
+<section class="sec sec-tint wonderland" id="mint">
+  <div class="mint-shell">
+    <div class="mint-copy">
+      <p class="kicker">06 · Genesis</p>
+      <h2>888 кроликов.<br>Не 8 888. Потому что вольеров — 888.</h2>
+      <p class="lead small">
+        Дефицит здесь настоящий: он ограничен площадью, штатом и вет-пропускной способностью резиденции.
+        Поэтому минт идёт волнами, строго под построенные слоты, а очередь вольеров — публичный счётчик в контракте.
+      </p>
+      <div class="waves" id="waves"></div>
+      <div class="mint-cta">
+        <div class="wl-form" id="wlForm">
+          <input type="email" id="wlEmail" placeholder="email для вайтлиста" aria-label="Email" autocomplete="email">
+          <button class="btn btn-primary" id="wlBtn">Вlist</button>
+        </div>
+        <button class="btn btn-line" id="connectWallet2">Подключить кошелёк</button>
+      </div>
+      <p class="fineprint" id="wlNote">Вайтлист даёт приоритет минта и −25% к цене Genesis. Никаких «ранних минтов за 3 друга».</p>
+    </div>
+    <div class="mint-art">
+      <figure class="art-frame round">
+        <img src="./assets/birthday-party.jpg" alt="День рождения кролика: торт из сена и колпак" loading="lazy">
+        <figcaption class="art-tag">Каждому Genesis — именной день рождения, 12 слотов в год на животное</figcaption>
+      </figure>
+      <div class="fact-stack">
+        <div><b id="factSlots">888</b><span>вольеров построено</span></div>
+        <div><b>160</b><span>слотов на резиденцию</span></div>
+        <div><b>6</b><span>care-FTE на 1 536 животных</span></div>
+        <div><b>3</b><span>независимых вет-аудита в год</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="road">
+    <div class="road-item"><span class="rd-num">0</span><b>Proof of Reality</b><p>Пилот: 6 кроликов, 4 камеры, ручной welfare-журнал. 8 недель без инцидента — иначе проект не запускается.</p><span class="rd-st done">готово</span></div>
+    <div class="road-item"><span class="rd-num">1</span><b>Мощность</b><p>Помещение, лицензии, вольеры 3×2×1, вет-партнёр 24/7, <code>CapacityProof</code> опубликован.</p><span class="rd-st now">в работе</span></div>
+    <div class="road-item"><span class="rd-num">2</span><b>Genesis + стримы</b><p>RCN на Solana, 24/7 эфиры, донаты и цели, CareEngine, welfare-дашборд.</p><span class="rd-st next">Q1</span></div>
+    <div class="road-item"><span class="rd-num">3</span><b>Рынок и breeding</b><p>Маркетплейс, BreedingBond, Litter/KitShare, роялти-движок, ROFR.</p><span class="rd-st next">Q2</span></div>
+    <div class="road-item"><span class="rd-num">4</span><b>$CLOVER + сезон</b><p>Burn-and-mint, конкурсы, Carrot Pass, косметика, передержка.</p><span class="rd-st next">Q3</span></div>
+  </div>
+</section>
+
+<!-- ══════════════ FAQ ══════════════ -->
+<section class="sec sec-tint" id="faq">
+  <header class="sec-head"><div><p class="kicker">07 · Честно</p><h2>Вопросы, которые обычно<br>задают в последнюю очередь</h2></div>
+  <p class="sec-note">Мы отвечаем до покупки, а не в тикетах после.</p></header>
+  <div class="faq" id="faq-list"></div>
+</section>
+
+<!-- ══════════════ STATUS BANNER ══════════════ -->
+<section class="sec status" id="status">
+  <div class="status-in">
+    <div class="st-badge"><span class="dot warn"></span> Статус продукта</div>
+    <h2>Что уже работает, а что — витрина</h2>
+    <div class="st-grid">
+      <div><b>Готово</b><ul><li>Спецификация: 18 разделов, ~32 000 слов</li><li>Экономическая модель и её воспроизводимость (<code>simulate.py</code>)</li><li>Концепт-арт и витрина лендинга</li></ul></div>
+      <div><b>В работе</b><ul><li>Смарт-контракты на Solana (Metaplex Core + PDA-реестры)</li><li>Резиденция №1: помещение и лицензии</li><li>Вет-оракул и стрим-пайплайн</li></ul></div>
+      <div><b>Демо на этой странице</b><ul><li>Курс SOL — реальный, из публичных источников</li><li>Кнопки кошелька — подключают расширение, если оно установлено</li><li>Покупка, донаты, калькулятор — интерфейсная модель без списаний</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ ОТКРЫТЫЕ ВОПРОСЫ ══════════════ -->
+<section class="sec" id="open-q">
+  <div class="st-grid" style="grid-template-columns:1fr">
+    <div class="oq-panel">
+      <p class="kicker">Блокеры продуктовой готовности · 16 вопросов</p>
+      <h2 style="font-size:clamp(20px,2.4vw,28px)">Пять вещей, которые я не решил за вас</h2>
+      <ol class="oq">
+        <li><b>Цепочка.</b> Вся спецификация (docs/12–14) и контракты написаны под <code>Base / ERC-4337 / EIP-7702</code>. Вы сказали <b>Solana</b>: это перепись пайплайна платежей, стандарта токена (Token-2022), пастбища карточек (Metaplex Core vs Bubblegum cNFT) и отказа от paymaster в привычном виде. Подтверждаете миграцию?</li>
+        <li><b>Цена входа.</b> Лендинг: <b>500 $ в SOL</b>. Модель: Burrow <b>450 $</b>, Warren 900, Crown 1 800 и <code>1 C = 0.05 $</code>. Оставить 500 $ только для волны 0 (и тогда какой ценой — остальные) или перевсеить документ?</li>
+        <li><b>Единица $CLOVER.</b> Лендинг использует 0.02 $, docs — 0.05 $. Если цена зафиксирована в USD, нужна либо привязка, либо «1 C = 0.05 $» как константа, а калькулятор пересчитается на +150 %.</li>
+        <li><b>Фиксация курса.</b> Сейчас 500 $ пересчитываются в SOL в браузере (клиентский курс). В проде так нельзя: нужен Pyth/Switchboard в момент подписи или quoting-окно 60–120 с с проскальзыванием ±1.5 %. Какой вариант?</li>
+        <li><b>Юрлицо и KYC.</b> Резиденция, лицензия на содержание, платёжный провайдер, гео-доступ (EEA / +KYC / глобально минус санкции) и статус RCN («право требования» vs «внутриигровой предмет») — без этого оферта не существует, а значит «купить кролика» технически невозможно.</li>
+      </ol>
+      <p class="fineprint" style="margin-top:14px">Полный список с вариантами и моими дефолтами:
+        <a class="oq-link" href="./QUESTIONS.md"><code>landing/QUESTIONS.md</code> → Q1–Q16</a>.
+        Пункт 3 в файле — про стандарт карточки, 12–13 — про то, где живёт журнал заботы и кто отвечает за камеры.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site-foot">
+  <div class="foot-in">
+    <div class="foot-brand">
+      <span class="brand-mark">🐇</span>
+      <div><b>Warren Protocol</b><p>Фиджитал-резиденция карликовых кроликов. Solana.</p></div>
+    </div>
+    <nav class="foot-nav">
+      <a href="#warren">Кролики</a><a href="#care">Содержание</a><a href="#donate">Донаты</a>
+      <a href="#breeding">Разведение</a><a href="#mint">Genesis</a><a href="#faq">FAQ</a>
+    </nav>
+    <p class="foot-disc">
+      Материалы не являются инвестиционным предложением и не содержат обещаний доходности.
+      Токены дают права участия и заботы, а не право на прибыль. Владение животным
+      предполагает ежемесячное содержание, ответственность и 7–12-летнее обязательство.
+      Содержание животных регулируется местным законодательством; перед покупкой прочитайте оферту резиденции.
+    </p>
+  </div>
+  <div class="foot-bar"><span>© <span id="year"></span> Warren Protocol</span><span>Курсы: CoinGecko / Binance / KuCoin (публичные API)</span></div>
+</footer>
+
+<!-- ══════════════ MODALS ══════════════ -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-bd" data-close></div>
+  <div class="modal-card" role="document">
+    <button class="modal-x" data-close aria-label="Закрыть">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<noscript><p style="padding:2rem;text-align:center">Для живой цены SOL и калькулятора нужен JavaScript; статическая часть доступна и так.</p></noscript>
+<script src="./app.js"></script>
+</body>
+</html>
