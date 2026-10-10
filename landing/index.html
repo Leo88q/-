@@ -14,58 +14,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐇</text></svg>">
-<link rel="stylesheet" href="./styles.css?v=3">
-<style>
-/* ── критичный слой «зазеркалья»: инлайн, чтобы не зависеть от кэша styles.css ── */
-.bg-wash{z-index:-3;background:linear-gradient(180deg,#0B1412,#08110F 45%,#0A100E)}
-.bg-page{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden;
-  background:url('./assets/bg-path.jpg') center 55%/cover no-repeat}
-.bg-page::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,17,15,.72),rgba(8,17,15,.90) 45%,rgba(8,17,15,.86))}
-.bg-page::before{content:"";position:absolute;inset:0;background:url('./assets/bg-footer.jpg') 50% 0/620px repeat;opacity:.12}
-/* снять «тихую» оптику v1 (маски и blend), иначе слои не читаются */
-.sec-tint.wonderland::before{content:none;background:none;-webkit-mask-image:none;mask-image:none;opacity:0}
-.hero::before{content:none;background:none;-webkit-mask-image:none;mask-image:none;opacity:0}
-.hole-cta img{-webkit-mask-image:none;mask-image:none;border-radius:22px;border:1px solid rgba(233,206,147,.34)}
-.sec,.hero,.strip,.site-foot{position:relative;isolation:isolate}
-.sec-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.sec-bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0}
-.sec-bg::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(8,17,15,.74),rgba(8,17,15,.86) 45%,rgba(8,17,15,.78))}
-.sec > *,.hero > *{position:relative;z-index:1}
-.sec-bg--hero img{opacity:.62}
-.sec-bg--strip img{opacity:.40}
-.sec-bg--warren img{opacity:.50}
-.sec-bg--mechanics img{opacity:.38}
-.sec-bg--care img{opacity:.44}
-.sec-bg--donate img{opacity:.34}
-.sec-bg--breeding img{opacity:.55;object-fit:contain;object-position:86% 42%}
-.sec-bg--mint img{opacity:.56}
-.sec-bg--faq img{opacity:.42}
-.sec-bg--status img{opacity:.38}
-.sec-bg--dec img{opacity:.34}
-.sec-dark{background:transparent}
-.sec-tint{background:transparent}
-.strip{background:transparent;border-block:1px solid rgba(233,206,147,.22)}
-.strip-in>div{background:rgba(6,12,10,.42)}
-.site-foot{background:url('./assets/bg-footer.jpg') center 0/760px repeat}
-.site-foot::before{content:"";position:absolute;inset:0;z-index:-1;
-  background:linear-gradient(180deg,rgba(8,17,15,.80),rgba(6,12,10,.93))}
-.keyhole-deco{position:absolute;right:-8%;top:-18%;width:min(420px,42%);pointer-events:none;z-index:0}
-.keyhole-deco img{width:100%;height:auto;opacity:.85}
-.mint-copy{position:relative}
-.mint-copy > *{position:relative;z-index:1}
-.modal-card{border:2px solid rgba(233,206,147,.46)}
-.mirror-key{position:absolute;top:-16px;left:50%;transform:translateX(-50%) rotate(-8deg);font-size:27px;line-height:1}
-.quote{position:relative;overflow:hidden;padding-right:112px;border:1px solid rgba(233,206,147,.42)}
-.quote::before{content:"";position:absolute;right:4px;top:50%;transform:translateY(-50%);width:100px;height:100px;
-  background:url('./assets/pocket-watch.jpg') center/contain no-repeat;opacity:.95;pointer-events:none}
-.q-main,.q-side{position:relative;z-index:1}
-@media (max-width:640px){.sec-bg--breeding img{object-fit:cover;opacity:.30}.quote{padding-right:16px}.quote::before{display:none}}
-</style>
+<link rel="stylesheet" href="./styles.css?v=4">
 </head>
 <body>
-<div class="bg-wash" aria-hidden="true"></div>
-<div class="bg-page" aria-hidden="true"></div>
 
 <!-- ══════════════ HEADER ══════════════ -->
 <header class="site-head" id="top">
@@ -92,10 +43,6 @@
 <main>
 <!-- ══════════════ HERO ══════════════ -->
 <section class="hero">
-  <div class="sec-bg sec-bg--hero" aria-hidden="true">
-    <img src="./assets/bg-warren.jpg" alt="">
-    <div class="path-deco"><span class="path-arrow">➶</span><em>curiouser and curiouser</em></div>
-  </div>
   <div class="hero-copy">
     <div class="eyebrow"><span class="dot pulse"></span> Genesis · 888 живых животных · Solana</div>
     <h1 class="h-display">Один токен.<br>Один живой кролик.<br><span class="accent">Камера — 24/7.</span></h1>
@@ -153,15 +100,16 @@
       <img src="./assets/hero-warren.jpg" alt="Восемь карликовых кроликов смотрят в камеру сверху" width="1536" height="1024">
       <figcaption class="art-tag"><span class="dot live"></span> «Первая нора» · студия 01 · прямой эфир 24/7</figcaption>
     </figure>
-    <div class="float-stat fs-1"><b>103&nbsp;$</b><span>средний чек заботы<br>на животное/мес.</span></div>
-    <div class="float-stat fs-2"><b>24/7</b><span>камеры без звука<br>и «тихий час»</span></div>
-    <div class="float-stat fs-3"><b>86&nbsp;%</b><span>доната уходит<br>в пользу кролика</span></div>
+    <div class="hero-stats">
+      <div class="float-stat"><b>103&nbsp;$</b><span>средний чек заботы<br>на животное/мес.</span></div>
+      <div class="float-stat"><b>24/7</b><span>камеры без звука<br>и «тихий час»</span></div>
+      <div class="float-stat"><b>86&nbsp;%</b><span>доната уходит<br>в пользу кролика</span></div>
+    </div>
   </div>
 </section>
 
 <!-- ══════════════ TRUST STRIP ══════════════ -->
 <section class="strip">
-  <div class="sec-bg sec-bg--strip" aria-hidden="true"><img src="./assets/bg-path.jpg" alt=""></div>
   <div class="strip-in">
     <div><b>3 × 2 × 1 м</b><span>минимум на пару — по нормам RSPCA/RWA, проверяется на вольере</span></div>
     <div><b>никогда не один</b><span>только bonded-пара или группа — гейт в смарт-контракте</span></div>
@@ -173,7 +121,6 @@
 
 <!-- ══════════════ LIVE WARREN / CARDS ══════════════ -->
 <section class="sec" id="warren">
-  <div class="sec-bg sec-bg--warren" aria-hidden="true"><img src="./assets/bg-hole.jpg" alt=""></div>
   <header class="sec-head">
     <div>
       <p class="kicker">01 · Warren Live</p>
@@ -218,9 +165,14 @@
   </div>
 </section>
 
+<!-- тропинка в зазеркалье — осознанная полоса-окно, не фон под текстом -->
+<figure class="art-band">
+  <img src="./assets/bg-path.jpg" alt="Тропинка в траве, вдали два кролика" loading="lazy">
+  <figcaption><span class="dot pulse"></span> «Curiouser and curiouser» · так выглядит путь от кнопки «забрать» до реального вольера: тропинка, а не лабиринт</figcaption>
+</figure>
+
 <!-- ══════════════ MECHANICS ══════════════ -->
 <section class="sec sec-dark" id="mechanics">
-  <div class="sec-bg sec-bg--mechanics" aria-hidden="true"><img src="./assets/bg-path.jpg" alt=""></div>
   <header class="sec-head">
     <div>
       <p class="kicker">02 · Что можно делать</p>
@@ -282,7 +234,6 @@
 
 <!-- ══════════════ CARE / PRICE ══════════════ -->
 <section class="sec" id="care">
-  <div class="sec-bg sec-bg--care" aria-hidden="true"><img src="./assets/bg-warren.jpg" alt=""></div>
   <header class="sec-head">
     <div>
       <p class="kicker">03 · Ответственность</p>
@@ -386,7 +337,6 @@
 
 <!-- ══════════════ DONATIONS DEMO ══════════════ -->
 <section class="sec sec-tint" id="donate">
-  <div class="sec-bg sec-bg--donate" aria-hidden="true"><img src="./assets/mad-hatter-table.jpg" alt=""></div>
   <header class="sec-head">
     <div><p class="kicker">04 · Донаты</p><h2>Деньги не могут уйти<br>от кролика</h2></div>
     <p class="sec-note">80% — в энддаумент животного (только whitelisted-вендоры), 10% — эфир и сообщество, 10% — фонд rescue-содержания. У энддаумента нет функции вывода: это свойство кода, а не обещание.</p>
@@ -410,7 +360,6 @@
 
 <!-- ══════════════ BREEDING ══════════════ -->
 <section class="sec sec-dark" id="breeding">
-  <div class="sec-bg sec-bg--breeding" aria-hidden="true"><img src="./assets/pocket-watch.jpg" alt=""></div>
   <header class="sec-head">
     <div><p class="kicker">05 · Генетика</p><h2>Сведение по договорённости,<br>не по кнопке «размножить»</h2></div>
     <p class="sec-note">BreedingBond — двусторонний контракт в блокчейне: срок, сплит, роялти, отказные права. Протокол берёт 30% выводка в пользу фонда содержания, а биология ограничена ончейн-лимитами.</p>
@@ -458,13 +407,17 @@
   </div>
 </section>
 
+<!-- корона для Crown: отдельная полоса, а не подложка -->
+<figure class="art-band">
+  <img src="./assets/hutch-crown-palace.jpg" alt="Вольер уровня Crown" loading="lazy" style="object-position:center 40%">
+  <figcaption><span class="tag">уровень Crown</span> отдельный зал с двумя выходами, тёплым настилом и «тихим часом» — 48 слотов на резиденцию</figcaption>
+</figure>
+
 <!-- ══════════════ MINT ══════════════ -->
 <section class="sec sec-tint wonderland" id="mint">
-  <div class="sec-bg sec-bg--mint" aria-hidden="true"><img src="./assets/bg-mint.jpg" alt=""></div>
   <div class="mint-shell">
     <div class="mint-copy">
       <p class="kicker">06 · Genesis</p>
-      <div class="keyhole-deco" aria-hidden="true"><img src="./assets/keyhole-frame.jpg" alt="" loading="lazy"></div>
       <h2>888 кроликов.<br>Не 8 888. Потому что вольеров — 888.</h2>
       <p class="lead small">
         Дефицит здесь настоящий: он ограничен площадью, штатом и вет-пропускной способностью резиденции.
@@ -505,7 +458,6 @@
 
 <!-- ══════════════ FAQ ══════════════ -->
 <section class="sec sec-tint" id="faq">
-  <div class="sec-bg sec-bg--faq" aria-hidden="true"><img src="./assets/bg-hole.jpg" alt=""></div>
   <header class="sec-head"><div><p class="kicker">07 · Честно</p><h2>Вопросы, которые обычно<br>задают в последнюю очередь</h2></div>
   <p class="sec-note">Мы отвечаем до покупки, а не в тикетах после.</p></header>
   <div class="faq" id="faq-list"></div>
@@ -513,7 +465,6 @@
 
 <!-- ══════════════ STATUS BANNER ══════════════ -->
 <section class="sec status" id="status">
-  <div class="sec-bg sec-bg--status" aria-hidden="true"><img src="./assets/bg-footer.jpg" alt=""></div>
   <div class="status-in">
     <div class="st-badge"><span class="dot warn"></span> Статус продукта</div>
     <h2>Что уже работает, а что — витрина</h2>
@@ -527,7 +478,6 @@
 
 <!-- ══════════════ ПРИНЯТЫЕ РЕШЕНИЯ ══════════════ -->
 <section class="sec" id="open-q">
-  <div class="sec-bg sec-bg--dec" aria-hidden="true"><img src="./assets/bg-mint.jpg" alt=""></div>
   <div class="dec-panel">
     <div class="dec-head">
       <p class="kicker">17 вопросов закрыты · решения владельца 2026-10-10</p>
@@ -561,10 +511,6 @@
 </section>
 </main>
 
-<figure class="hole-cta" aria-label="Нора">
-  <img src="./assets/bg-hole.jpg" alt="Нора, ведущая в зазеркалье">
-  <figcaption><span class="dot live"></span> «Мы в стране чудес» · эфир резиденции идёт круглосуточно</figcaption>
-</figure>
 
 <footer class="site-foot">
   <div class="foot-in">
@@ -590,10 +536,8 @@
 <!-- ══════════════ MODALS ══════════════ -->
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
   <div class="modal-bd" data-close></div>
-  <div class="modal-mirror" aria-hidden="true"><img src="./assets/keyhole-frame.jpg" alt=""></div>
-  <div class="modal-card mirror cut" role="document">
-    <span class="mirror-garland" aria-hidden="true"></span>
-    <span class="mirror-key" aria-hidden="true">🗝</span>
+  <div class="modal-card" role="document">
+        <span class="mirror-key" aria-hidden="true">🗝</span>
     <button class="modal-x cut-s" data-close aria-label="Закрыть">✕</button>
     <div id="modalBody"></div>
   </div>
@@ -602,6 +546,6 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <noscript><p style="padding:2rem;text-align:center">Для живой цены SOL и калькулятора нужен JavaScript; статическая часть доступна и так.</p></noscript>
-<script src="./app.js?v=3" defer></script>
+<script src="./app.js?v=4" defer></script>
 </body>
 </html>
