@@ -632,13 +632,20 @@ const FAQ = [
 })();
 
 /* ═══════════ 9. МОДАЛКА ═══════════ */
+const SUITS = ['♠', '♥', '♦', '♣'];
+function suitPip(btn, i) {
+  const p = el('span', 'pip', SUITS[i % 4]);
+  if (['♥', '♦'].includes(SUITS[i % 4])) p.style.color = '#C9705F';
+  btn.appendChild(p);
+}
 function openModal({ title, html = '', actions = [] }) {
   const m = $('#modal'), body = $('#modalBody');
   body.innerHTML = `<h3>${title}</h3>${html}`;
   if (actions.length) {
     const row = el('div', 'card-actions'); row.style.marginTop = '18px';
-    actions.forEach(a => {
+    actions.forEach((a, idx) => {
       const b = el('button', 'btn ' + (a.kind === 'line' ? 'btn-line' : 'btn-primary'), a.label);
+      suitPip(b, idx);
       b.addEventListener('click', () => a.fn ? a.fn() : closeModal());
       row.appendChild(b);
     });
